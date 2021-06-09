@@ -13,6 +13,9 @@ strategy:
     Python38:
       python.version: '3.8.10'
 
+variables:
+  PYTHONPATH: 'src'
+
 steps:
 - task: UsePythonVersion@0
   inputs:
