@@ -2,3 +2,6 @@
 .idea/
 .vscode/
 __pycache__/
+build/
+dist/
+ml_commons_pekalam.egg-info/
