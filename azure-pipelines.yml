@@ -14,7 +14,7 @@ strategy:
       python.version: '3.8.10'
 
 variables:
-  PYTHONPATH: 'src'
+  PYTHONPATH: 'src/ml_commons'
 
 steps:
 - task: UsePythonVersion@0
