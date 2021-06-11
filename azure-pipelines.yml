@@ -31,3 +31,12 @@ steps:
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
+
+- script: |
+    python -m build
+  displayName: 'build'
+
+- script: |
+    python -m twine upload dist/*
+  displayName: 'upload'
+
