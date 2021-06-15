@@ -99,3 +99,21 @@ def test_add_metric_returns_valid_values_values_scenario2():
     # inc2
     (checkpoint, stop) = early_stopping.add_metric(0.1)
     assert early_stopping.metric_increased == False and stop == False and checkpoint == True and early_stopping.min_delta_iter == 0 and early_stopping.inc_iter == 0 and early_stopping.inc_start_loss == 0
+
+
+def test_add_metric_returns_checkpoint_and_doesnt_sto_if_early_stop_disabled():
+    early_stopping = EarlyStopping(None, 0.00001, 2000)
+    assert early_stopping.metric_increased == False
+    assert early_stopping.increase_counting_disabled == True
+
+    (checkpoint, stop) = early_stopping.add_metric(0.1)
+    assert early_stopping.increase_counting_disabled == True
+    assert early_stopping.metric_increased == False and stop == False and checkpoint == False and early_stopping.min_delta_iter == 0 and early_stopping.inc_iter == 0 and early_stopping.inc_start_loss == 0
+
+    (checkpoint, stop) = early_stopping.add_metric(0.2)
+    assert early_stopping.increase_counting_disabled == True
+    assert early_stopping.metric_increased == False and stop == False and checkpoint == False and early_stopping.min_delta_iter == 0 and early_stopping.inc_iter == 0 and early_stopping.inc_start_loss == 0
+
+    (checkpoint, stop) = early_stopping.add_metric(0.05)
+    assert early_stopping.increase_counting_disabled == True
+    assert early_stopping.metric_increased == False and stop == False and checkpoint == False and early_stopping.min_delta_iter == 0 and early_stopping.inc_iter == 0 and early_stopping.inc_start_loss == 0

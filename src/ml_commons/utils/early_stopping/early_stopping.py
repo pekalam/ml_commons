@@ -11,7 +11,8 @@ class EarlyStopping:
         self.early_stop_min_delta_patience = early_stop_min_delta_patience if early_stop_min_delta_patience is not None else float(
             "inf")
         self.min_delta = min_delta if min_delta is not None else float("-inf")
-        assert early_stop_patience >= 0
+        assert early_stop_patience is None or early_stop_patience >= 0
+        self.increase_counting_disabled = early_stop_patience is None
         assert (early_stop_min_delta_patience is None and min_delta is None) or (
                     early_stop_min_delta_patience >= 0 and min_delta > 0)
 
@@ -31,13 +32,13 @@ class EarlyStopping:
         """
         should_checkpoint = should_stop = False
 
-        if self.inc_iter > self.early_stop_patience or self.min_delta_iter > self.early_stop_min_delta_patience:
+        if not self.increase_counting_disabled and self.inc_iter > self.early_stop_patience or self.min_delta_iter > self.early_stop_min_delta_patience:
             raise ValueError("Training not stopped")
 
-        if metric_val > self.prev_metric_val:
+        if not self.increase_counting_disabled and metric_val > self.prev_metric_val:
             self.min_delta_iter = 0
             self.inc_iter += 1
-            print('Early stop loss increased')
+            print('Early stop loss increased ', self.inc_iter, '/', self.early_stop_patience)
             if self.inc_iter == 1:
                 print('Saving checkpoint due to increase of ', self.__format_early_metric_name(metric_name))
                 should_checkpoint = True
@@ -46,7 +47,7 @@ class EarlyStopping:
                 should_stop = True
                 print('Stopped due to increase of ', self.__format_early_metric_name(metric_name))
 
-        if self.inc_iter >= 1 and metric_val <= self.inc_start_loss:
+        if not self.increase_counting_disabled and self.inc_iter >= 1 and metric_val <= self.inc_start_loss:
             self.inc_iter = 0
             self.inc_start_loss = 0
             print('saving checkpoint due to decrease of ', self.__format_early_metric_name(metric_name))
